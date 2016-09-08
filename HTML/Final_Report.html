@@ -1,0 +1,181 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta http-equiv="Content-Style-Type" content="text/css">
+  <title></title>
+  <meta name="Generator" content="Cocoa HTML Writer">
+  <meta name="CocoaVersion" content="1404.46">
+  <style type="text/css">
+    p.p1 {margin: 0.0px 0.0px 0.0px 0.0px; text-align: center; line-height: 16.0px; font: 14.0px Helvetica; color: #000000; -webkit-text-stroke: #000000}
+    p.p2 {margin: 0.0px 0.0px 0.0px 0.0px; line-height: 16.0px; font: 14.0px Helvetica; color: #000000; -webkit-text-stroke: #000000}
+    p.p3 {margin: 0.0px 0.0px 8.0px 0.0px; line-height: 17.0px; font: 14.0px Calibri; color: #000000; -webkit-text-stroke: #000000}
+    p.p4 {margin: 0.0px 0.0px 8.0px 0.0px; line-height: 17.0px; font: 14.0px Calibri; color: #0433ff; -webkit-text-stroke: #000000}
+    p.p6 {margin: 0.0px 0.0px 8.0px 36.0px; line-height: 17.0px; font: 14.0px Calibri; color: #000000; -webkit-text-stroke: #000000}
+    p.p7 {margin: 0.0px 0.0px 8.0px 36.0px; line-height: 17.0px; font: 14.0px Calibri; color: #be38f3; -webkit-text-stroke: #000000}
+    p.p8 {margin: 0.0px 0.0px 8.0px 36.0px; line-height: 17.0px; font: 14.0px Calibri; -webkit-text-stroke: #000000}
+    p.p9 {margin: 0.0px 0.0px 8.0px 36.0px; line-height: 17.0px; font: 14.0px Calibri; color: #791a3e}
+    p.p10 {margin: 0.0px 0.0px 8.0px 36.0px; line-height: 17.0px; font: 14.0px Calibri; -webkit-text-stroke: #000000; min-height: 17.0px}
+    p.p11 {margin: 0.0px 0.0px 8.0px 36.0px; line-height: 17.0px; font: 14.0px Calibri; color: #942192; -webkit-text-stroke: #000000}
+    p.p12 {margin: 0.0px 0.0px 8.0px 36.0px; line-height: 17.0px; font: 14.0px Calibri}
+    p.p13 {margin: 0.0px 0.0px 8.0px 36.0px; line-height: 17.0px; font: 14.0px Calibri; color: #000000; -webkit-text-stroke: #000000; min-height: 17.0px}
+    p.p14 {margin: 0.0px 0.0px 0.0px 0.0px; line-height: 17.0px; font: 14.0px Calibri; color: #000000; -webkit-text-stroke: #000000}
+    li.li3 {margin: 0.0px 0.0px 8.0px 0.0px; line-height: 17.0px; font: 14.0px Calibri; color: #000000; -webkit-text-stroke: #000000}
+    li.li4 {margin: 0.0px 0.0px 8.0px 0.0px; line-height: 17.0px; font: 14.0px Calibri; color: #0433ff; -webkit-text-stroke: #000000}
+    li.li5 {margin: 0.0px 0.0px 8.0px 0.0px; line-height: 17.0px; font: 12.0px Calibri; color: #000000; -webkit-text-stroke: #000000}
+    span.s1 {font-kerning: none}
+    span.s2 {text-decoration: underline ; font-kerning: none}
+    span.s3 {-webkit-text-stroke: 0px #000000}
+    span.s4 {font-kerning: none; color: #000000}
+    span.s5 {font: 14.0px Calibri; -webkit-text-stroke: 0px #000000}
+    span.s6 {font: 14.0px Calibri; font-kerning: none}
+    span.s7 {font: 7.0px Calibri; font-kerning: none}
+    span.s8 {font-kerning: none; color: #ff2600}
+    span.s9 {font: 14.0px Calibri; font-kerning: none; color: #000000}
+    span.Apple-tab-span {white-space:pre}
+    ol.ol1 {list-style-type: decimal}
+    ol.ol2 {list-style-type: lower-alpha}
+    ul.ul1 {list-style-type: square}
+  </style>
+</head>
+<body>
+<p class="p1"><span class="s1"><br>
+</span><span class="s2"><b>CS:491, Home Work 4</b></span></p>
+<p class="p2"><span class="s1"><br>
+</span></p>
+<p class="p2"><span class="s1">Submitted by: <span class="Apple-tab-span">	</span>Janani Neelakantan<span class="Apple-converted-space">  </span>(UIN: 670805407)</span></p>
+<p class="p2"><span class="s1"><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>Yogeeta Monica Kuttabadkar (UIN: 661868770)</span></p>
+<p class="p2"><span class="s1"><br>
+</span></p>
+<ol class="ol1">
+  <li class="li3"><span class="s3"></span><span class="s1">Tweet processing Steps:</span></li>
+</ol>
+<p class="p3"><span class="s1">The entire tweet processing was conducted on the train.csv data, and tested on the test.csv. We have used the MAP function of the spark.mllib to parallelize the operation, meaning, the processing of the tweets is written in a function and the entire data set to this function using the MAP.<span class="Apple-converted-space"> </span></span></p>
+<p class="p4"><span class="s4">&lt;code snippnet&gt;<span class="Apple-converted-space">  </span></span><span class="s1">cleaned_data=alldata.map(parseTweet)<span class="Apple-tab-span">	</span></span></p>
+<p class="p3"><span class="s2"><b><i>Used Packages</i>:<span class="Apple-converted-space">  </span></b></span><span class="s1">NLTK, RR</span></p>
+<p class="p3"><span class="s1">Using Regular Expressions of “re” in python the following are performed as a part of cleaning:</span></p>
+<ol class="ol1">
+  <li class="li3"><span class="s3"></span><span class="s1">Removing trailing spaces</span></li>
+  <li class="li3"><span class="s3"></span><span class="s1">Conversion to lower case letters to maintain uniformity</span></li>
+  <li class="li3"><span class="s3"></span><span class="s1">Removing digits between the tweets. Here, we have choosen to only remove the digits between the words, instead of all together ignoring the words that begin with digits. The justification is that the more meaningful data we have the more our model will be trained.</span></li>
+  <li class="li3"><span class="s3"></span><span class="s1">Reduction: All user names beginning with ‘@&lt;name’ are reduced to AT_USER, all links of the form http,https,www are reduced to URL. The regex is :</span></li>
+  <li class="li4"><span class="s3"></span><span class="s1">tweetText=re.sub(r’\@[\w]*,’AT_USER’), re.sub(‘(www\.[^\s]+) || (</span><span class="s2">http://[^\s</span><span class="s1">]+) || (</span><span class="s2">https://[^\s]+)’,’URL</span><span class="s1">’)</span></li>
+  <li class="li3"><span class="s3"></span><span class="s1">Trailing Characters: Any word that occurs with more than 2 consecutive occurrences of same letter are reduced to exactly 2 occurrences.</span></li>
+  <li class="li3"><span class="s3"></span><span class="s1">Removal of alphanumeric characters</span></li>
+  <li class="li3"><span class="s3"></span><span class="s1">Removal of stop words (based on nltk stop word corpus) – Using the Stop word corpus (English Language”) we have ignored these words from our analysis</span></li>
+  <li class="li3"><span class="s3"></span><span class="s1">Stemming: We have used the SNOWBALL STEMMER which is also a version of the porter stemmer. Some advantages of using this stemmer are:<span class="Apple-tab-span">	</span></span></li>
+</ol>
+<ol class="ol1">
+  <ol class="ol2">
+    <li class="li3"><span class="s3"></span><span class="s1">It offers coverage of more languages and the tweets are written in many different languages, hence it would be useful to characterize our words and use them in learning model, instead of just omitting foreign language words</span></li>
+    <li class="li3"><span class="s3"></span><span class="s1">More accurate to reduce the word to more readable words and not core roots</span></li>
+    <li class="li3"><span class="s3"></span><span class="s1">Removing Punctuation: With the use of the “string.punctuation” library in python, we have removed all punctuation</span></li>
+    <li class="li3"><span class="s3"></span><span class="s1">Other Minimal Cleaning: &amp;-&gt; and, didn’t-&gt; did not, wouldn’t-&gt; would not, etc.</span></li>
+  </ol>
+</ol>
+<p class="p3"><span class="s1">The above 10 steps are performed for the text of each tweet in the train.csv and test.csv files.</span></p>
+<p class="p3"><span class="s2"><b><i>Learning and Observation:</i></b></span></p>
+<ol class="ol1">
+  <ol class="ol2">
+    <li class="li3"><span class="s3"></span><span class="s1">The cleaning of data affects the accuracy of the models in different classifiers only to a minimal extent. For instance, when we did not perform steps 7-8 in our processing and ran the classification models, as compared with the original reports values below, the Naïve Bayes classification differed by 4%, Logistic Regression different by 6%.</span></li>
+    <li class="li3"><span class="s3"></span><span class="s1">The sequence of processing of tweets mattered, for example if we performed removal of alphanumeric characters before other steps, the meaning of the word changed drastically.</span></li>
+    <ul class="ul1">
+      <li class="li5"><span class="s5"></span><span class="s6">“</span><span class="s1">@switchfoot http://twitpic.com/2y1zl - Awww, that's a bummer.<span class="Apple-converted-space">  </span>You shoulda got David Carr of Third Day to do it. ;D”</span></li>
+      <li class="li3"><span class="s3"></span><span class="s1">Reduced To(By removing alphanumeric characters first): switch foot<span class="Apple-converted-space">  </span>http<span class="Apple-converted-space">  </span>twitpic com……</span></li>
+    </ul>
+  </ol>
+</ol>
+<ol class="ol1">
+  <ol class="ol2">
+    <li class="li3"><span class="s3"></span><span class="s1">Emoticons: They are rendered differently in different OS. For example in the MAC texteditor\excel files, emoticons are reduced to alphanumeric characters like “:/D”, where in the Ubuntu OS they are displayed as the icon. This affected the cleaning since in punctuation removal some letters (single characters) remained in the tweet.</span></li>
+  </ol>
+</ol>
+<p class="p3"><span class="s2"><b><i>Special Cases Handled:</i></b></span></p>
+<p class="p3"><span class="s1">The train.csv file contains 6 columns separated by commas. When we access the tweet text alone, we perform a string.split(‘,’) and take the 6</span><span class="s7"><sup>th</sup></span><span class="s1"> index. In cases where the tweet text itself contains a comma, only partial text was considered by the function. We handled this by ensuring to perform a concatenate on the remaining indexes of the string (if any).</span></p>
+<p class="p3"><span class="s1"><br>
+</span></p>
+<p class="p3"><span class="s1">2.<span class="Apple-tab-span">	</span>Feature Space:<span class="Apple-converted-space"> </span></span></p>
+<p class="p6"><span class="s2"><b><i>Feature Space Description:</i></b></span><span class="s1"> The cleaned processed tweets are split into tokens using the nltk.word_tokenizer function. This is then passed to the Hashing TF method for calculation of feature vectors. We have tried using both the hashing-TF as well as TF-IDF calculation to give us optimal results and test runs are documented in the table below. We noticed difference in accuracies for different methods of feature extraction.</span></p>
+<p class="p6"><span class="s1"><i>Note: The accuracy is calculated on the training dataset, hence the number of features choose was high to have maximum learning, by splitting the data into a train for the model and the remaining part for the test.Values “NA” in the table represent that we did not perform\document that run.</i></span></p>
+<p class="p6"><span class="s1"><br>
+</span><span class="s8">pyspark.mllib.feature.HashingTF:</span><span class="s1"> To calculate importance of each term using hashing trick</span></p>
+<p class="p6"><span class="s8">pyspark.mllib.feature.IDF:</span><span class="s1"> To calculate the importance of a word to the text of all other tweets</span></p>
+<p class="p6"><span class="s1"><b>Performed on: train.csv<span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>Random Split Value: 70% (Train) -30% (Test)<span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>Feature Space: Unigrams</b></span></p>
+<p class="p6"><span class="s1"><i>(Values reports in percentages)</i></span></p>
+<p class="p7"><span class="s1"><i>TODO: Place table here</i></span></p>
+<p class="p6"><span class="s2"><b><i>Type of feature space:</i></b></span><span class="s1"><i> </i>We noticed higher results of accuracy only on UNIGRAMS. This is also justifiable since the tweet are short sentences and hence using bigrams or combination, did not group relevant terms as efficiently as unigrams. Hence, all results are documents as unigrams.</span></p>
+<p class="p6"><span class="s2"><b><i>Number of Features:<span class="Apple-converted-space"> </span></i></b></span><span class="s1"> Each classification has an impact on the number of features used to train the model. The table below explains the different runs performed using different number of features. We have used feature range starting from 1000-All.</span></p>
+<p class="p6"><span class="s2"><b><i>Learning and Observations:</i></b></span><span class="s1"><b><i><br>
+</i></b>1. Specifically for Decision Tree Classification, if the number of features considered were high the tree did not converge as it was throwing an “No Space on disk”, “Out Of memory Error”. Hence, we started from a very small feature set of 50 and in increments we proceeded. The decision tree began to converge with features upto 100 in an acceptable amount of time. When we tried with a feature set of 1000 it was able to converge after 7 mins. This issue is due to a number of reasons as we used the cloud VM which ran out of space, the model was run on the cloud via internet which slowed things down dramatically.<span class="Apple-converted-space"> </span></span></p>
+<p class="p6"><span class="s1">2. In the Logistic Regression Classification and Naive Bayes runs, we noticed that after a point, the number of features do not effect the accuracy in huge steps. For example, from the above table we can see that the NV classification for 50000 features gave accuracy of 74.54 %, and for 60000 features it gave 74.293 which took higher computational time and resources but resulted in less improvements of accuracy.<span class="Apple-converted-space"> </span></span></p>
+<p class="p6"><span class="s1">3. Hashing TF vs IDF: Calculation of IDF took a longer time, and hence we moved to Hashing-TF which is more efficient in computation.<span class="Apple-converted-space">  </span><br>
+</span></p>
+<p class="p6"><span class="s1">3.<span class="Apple-converted-space">  </span></span><span class="s2"><b><i>Parameter Tuning:</i></b></span></p>
+<p class="p6"><span class="s2"><b><i>a. Naive Bayes Classification:<span class="Apple-converted-space">  </span></i></b></span><span class="s1">The only value we modified for the Naive Bayes is the number of features considered in the hashing-tf for model training. The classifier ran almost in same time and gave results that didn’t vary a lot.</span></p>
+<p class="p6"><span class="s2"><b><i>b. Logistic Regressions Classification: </i></b></span><span class="s1">We fine tuned the parameter of the train function-“ number of iterations” of LR. The default is 100 iterations and we conducted experiments by giving different combinations of the number of features and the number of iterations and monitored the accuracy changes. The table below explains the findings.</span></p>
+<p class="p6"><span class="s1"><span class="Apple-tab-span">	</span></span><span class="s2"><b><i>LogisticRegressionwithSGD</i></b></span><span class="s1">: Since ours is a binary classification data, consisting of 0’s and 1’s, our first run was using this method. The accuracy obtained with this method remained between 65%-68% on training data. The <span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>considerations<span class="Apple-converted-space">  </span>were No of TF features: 5000, Iterations:100, regularisation type:L2 (default), step:1.0. And the accuracy noted was 63.784%</span></p>
+<p class="p8"><span class="s4"><span class="Apple-tab-span">	</span></span><span class="s2"><b><i>LogisticRegressionwithLBFGS</i></b></span><span class="s1">: The accuracy obtained with this method showed higher values, keeping all considerations same. Reported accuracy: 71.564%</span></p>
+<p class="p8"><span class="s1">Based on the documentation in SPARK.MLLIB, the reason for Limited-memory BFGS reporting higher accuracy is because it is an optimisation algorithm which achieves faster convergence than other primitive algorithms.<span class="Apple-converted-space"> </span></span></p>
+<p class="p9"><span class="s1">TODO: PLACE HYDERLING HERE&lt;href&gt;http://spark.apache.org/docs/latest/mllib-optimization.html#choosing-an-optimization-method&lt;/href&gt;</span></p>
+<p class="p10"><span class="s1"></span><br></p>
+<p class="p8"><span class="s1"><b>Performed on: train.csv<span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>Random Split Value: 70% (Train) -30% (Test)<span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span><span class="Apple-tab-span">	</span>Feature Space: Unigrams</b></span></p>
+<p class="p8"><span class="s1"><i>(Values reports in percentages)</i></span></p>
+<p class="p10"><span class="s1"></span><br></p>
+<p class="p11"><span class="s1">TODO: PLACE TABLE HERE&lt;image:TABLE 2&gt;</span></p>
+<p class="p8"><span class="s1">c. </span><span class="s2"><b><i>Decision Tree Classification:<span class="Apple-converted-space"> </span></i></b></span><span class="s1"> For this classification, we considered the parameters MaxBins=32, to the default, and decreased it for faster convergence. We expected the number of split candidates to be reduced and the algorithm to converge faster but this did not help when we increased the number of features in our bag. Further, we increased the mazMemoryInMB value from 256 (default) to 512MB and 384MB memory, but this caused a “No More space on disk exception”. We could not increase the size of the VM or create a new VM as the amount of credit in azure was very low and we wanted to maintain some for running tests.</span></p>
+<p class="p10"><span class="s1"></span><br></p>
+<p class="p8"><span class="s2"><b><i>4. Reporting Accuracies:</i></b></span></p>
+<p class="p12"><span class="s1"><b>Training Accuracy:<span class="Apple-tab-span">	</span> </b>The accuracy is calculated on the train.csv with varying number of features (All,25000,50000) to give approximate results. The results are in decimals.</span></p>
+<p class="p12"><span class="s1"><b><i>K-Fold Average Accuracy:</i></b> All K-Fold tests are run for 10 iterations by splitting the data into 90%-10% sets in each iteration. As the K-fold is intended to validate the model, we split the data one time into 10 equal sets and in each iteration (10 iterations) we take one part as testing and remaining 9 parts as training. In this way, we validate that our model that was developed on train.csv is accurate, and we considered all partitions of data as test and train. Due to the shortage of space, slow running systems, the K-Fold tests on all classifiers took a long time. Hence, we reduced the number of features to 5000 (for NB, LR) and ran the models to get results.<span class="Apple-converted-space"> </span></span></p>
+<p class="p8"><span class="s1"><b><i>Testing Accuracy:<span class="Apple-converted-space"> </span></i></b><i> </i>Test accuracy is calculated on the test.csv file. We trained each of the model on the train data and taking this model we have run on the test data. The pipeline is preserved the same for both runs as:</span></p>
+<p class="p8"><span class="s1"><span class="Apple-tab-span">	</span>a. Load the data</span></p>
+<p class="p8"><span class="s1"><span class="Apple-tab-span">	</span>b. Process the tweets, Return (Label,Text)</span></p>
+<p class="p8"><span class="s1"><span class="Apple-tab-span">	</span>c. Transform data into features by Calculate Hashing-TF on (Label,{Text.Tokenize}). Maintain same number of features for train and test runs to ensure accurate results</span></p>
+<p class="p8"><span class="s1"><span class="Apple-tab-span">	</span>d. Transform data into set of LabelPoints</span></p>
+<p class="p8"><span class="s1"><span class="Apple-tab-span">	</span>e. For Training, prepare model. For test, run predictions</span></p>
+<p class="p11"><span class="s1">&lt;TODO&gt; Image of table3,4</span></p>
+<p class="p8"><span class="s2"><b><i>Findings:</i></b></span></p>
+<p class="p8"><span class="s1">a. Since the train.csv and test.csv runs fairly well in Logistic Regression and Naives Bayes classifications. We determine the best model based upon the values of the K-Fold, which seems as a valid parameter. The Decision Tree classifier is not a contender as it doesn’t even converge for the normal runs. As per the values, the Logistic Regression classifier yields an higher K-Fold average of 73% which is the best model classifier.<span class="Apple-converted-space"> </span></span></p>
+<p class="p10"><span class="s1"></span><br></p>
+<p class="p8"><span class="s2"><b><i>5. Plotting the Values:</i></b></span></p>
+<p class="p10"><span class="s1"></span><br></p>
+<p class="p8"><span class="s2"><b><i>6.Definitions:</i></b></span></p>
+<p class="p12"><span class="s1">On observation, the data given to us has almost a 50-50 percentage of YES\NO values. Hence, we made use of accuracy as a metric to determine the best classifier model above since the number of categories are almost same. If this was not the case then accuracy would prove to be a poor measurement. Other measures are:</span></p>
+<p class="p8"><span class="s2"><b><i><span class="Apple-converted-space"> </span>Precision: </i></b></span><span class="s1">Quality of being exact and accurate. In the assignment it means, for all the labeled tweets in the test.csv, how many tweets did my model label correctly, predict accurately.</span></p>
+<p class="p8"><span class="s2"><b><i>Recall: </i></b></span><span class="s1">The relevant instances that are retrieved, the noise the model generates. In terms of the assignment,it indicates the number of True positives present in the test.csv and the amount actually retrieved by my model.</span></p>
+<p class="p8"><span class="s2"><b><i>F-Score: </i></b></span><span class="s1">The wighted harmony mean of precision and recall.<span class="Apple-converted-space"> </span></span></p>
+<p class="p12"><span class="s1">For all classifiers, the precision, recall and F-measure do not drastically vary. This implies that the model performs well in this binary classification domain, it produces similar amount of noise to the amount of correctly generated data labels. The only way to differentiate among just these factors , is to pick the model which has more coverage (matches more target samples), performs better in terms of computation\speed\resources.<span class="Apple-converted-space"> </span></span></p>
+<p class="p12"><span class="s1">Consider the below cases:<span class="Apple-converted-space"> </span></span></p>
+<p class="p12"><span class="s1">Case1: Label a false NO as YES</span></p>
+<p class="p12"><span class="s1">Case2: Lable a false YES as NO</span></p>
+<p class="p12"><span class="s1">In case1, both precision and recall increase. Because precision ignores the true negatives, hence in this case we are only adding a extra positive to the return set, hence noise reduces. In case2, the recall stays the same and the precision continues to increase. In these models, the case is not only labelling a false no as yes but also labelling true no as yes, due to which the precision and recall remain close.</span></p>
+<p class="p8"><span class="s2"><b><i>Confusion Matrix:</i></b></span><span class="s1"><i> </i>The number of TP,FP,FN,TN returned for each of the tweet in test.csv predicted by the classifier models</span></p>
+<p class="p8"><span class="s1">TP: Label for tweet is positive in test.csv and model correctly predicted positive</span></p>
+<p class="p8"><span class="s1">TN: Label for tweet is negative in test.csv and model predicted negative</span></p>
+<p class="p8"><span class="s1">FP: Label for tweet is negative in test.csv and model predicted positive</span></p>
+<p class="p8"><span class="s1">FN: Label for tweet is positive in test.csv and mode predicted negative</span></p>
+<p class="p8"><span class="s1">&lt;href&gt;<a href="https://www.researchgate.net/post/Something_I_cant_interpret_about_precision_and_recall_in_my_dataset-can_you_help"><span class="s9">https://www.researchgate.net/post/Something_I_cant_interpret_about_precision_and_recall_in_my_dataset-can_you_help</span></a></span></p>
+<p class="p8"><span class="s1"><a href="https://en.wikipedia.org/wiki/Precision_and_recall">https://en.wikipedia.org/wiki/Precision_and_recall<span class="s9"></span></a></span></p>
+<p class="p13"><span class="s1"></span><br></p>
+<p class="p6"><span class="s2"><b><i>7. </i></b></span><span class="s1">For the Naive Bayes and Decision tree classifications, the ROC curve cannot be plotted using any direct means in spark.mllib package. They are methods present in the spark.ml package but they work specifically on data frames. Hence, we have no means to plant the curve for these two classifications.</span></p>
+<p class="p6"><span class="s1">However, for Logistic Regression, for each label in the test.csv, we retrieved metrics of the True Positive Rate and False Positive Rate from the model by passing it into the “MultiClass Metric”. And plotted the curve using matplotlib.</span></p>
+<p class="p6"><span class="s2"><b>ROC CURVE Finding: <span class="Apple-converted-space"> </span></b></span><span class="s1"> The logistic regression classifier<span class="Apple-converted-space">  </span>covers the maximum area (as accuracy is highest).</span></p>
+<p class="p6"><span class="s1">Proposed Ideas:<span class="Apple-converted-space"> </span></span></p>
+<p class="p6"><span class="s1">Using the AUC classifier to predict the ROC for<span class="Apple-converted-space"> </span></span></p>
+<p class="p6"><span class="s1">8</span><span class="s2"><b><i>. Top Most informative features</i></b></span><span class="s1">: As discussed before, the features are converted into hash values (vectors) using the Hashing-TF method. Once the value of the tweet is hashed, if is not possible to retrieve the tweet back. Hence, even if we used different methods to sort the features we could still not be able to get a meaningful value for this question.</span></p>
+<p class="p13"><span class="s1"></span><br></p>
+<p class="p6"><span class="s1">9.Best Classifier:</span></p>
+<p class="p6"><span class="s1">The best classifier from our experiments proves to be the LR for the following reasons:</span></p>
+<p class="p6"><span class="s1"><span class="Apple-tab-span">	</span>a. It performed consistently across Training accuracy, Testing Accuracy and K-Fold Validation</span></p>
+<p class="p6"><span class="s1"><span class="Apple-tab-span">	</span>b. The Precision and Recall for LR seem fairly reasonable and do not vary drastically<span class="Apple-converted-space"> </span></span></p>
+<p class="p6"><span class="s1"><span class="Apple-tab-span">	</span>c. It has the highest accuracy across K-Fold Validation</span></p>
+<p class="p6"><span class="s1"><span class="Apple-tab-span">	</span>d. The accuracy value determined from the K-Fold validation and the testing accuracy are closer <span class="Apple-tab-span">	</span>in the plotted graph, which implies the model performed similarly on the test and train data, as <span class="Apple-tab-span">	</span>compared to the NB or DT classifiers.<span class="Apple-converted-space"> </span></span></p>
+<p class="p6"><span class="s1">10.<span class="Apple-converted-space">  </span>Prediction Probabilities: Using spark.mllib we were not able to retrieve the perdition probabilities. Although, to get the top most features we could make use to the FEATURE SELECTION methods like the ChiSqSelector which takes the top feature parameter will perform selection.</span></p>
+<p class="p6"><span class="s1"><br>
+</span></p>
+<p class="p6"><span class="s1"><br>
+</span></p>
+<p class="p14"><span class="s1"><br>
+</span></p>
+</body>
+</html>

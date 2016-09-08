@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <!-- Meta, title, CSS, favicons, etc. -->
+        <meta charset="utf-8">
+    <title>CS 491: Introduction to Data Science &middot; classification</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Course web page for CS 491 at UIC.">
+
+    <link href="/datascience/css/bootstrap.css" rel="stylesheet">
+    <link href="/datascience/css/site.css" rel="stylesheet">
+    <link href="/datascience/css/github.css" rel="stylesheet">
+    <link href='https://fonts.googleapis.com/css?family=Droid+Sans:400,700' rel='stylesheet' type='text/css'>
+
+
+    <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></sc\
+ript>
+    <![endif]-->
+    <script type="text/javascript">
+
+      var _gaq = _gaq || [];
+      _gaq.push(['_setAccount', 'UA-21532225-1']);
+      _gaq.push(['_trackPageview']);
+
+      (function() {
+        var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+        ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+        var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+      })();
+
+    </script>
+
+    <!-- Place anything custom after this. -->
+  </head>
+  <body>
+    
+
+        <div class="col-md-9" role="main">
+          <h1 id="assignment-4">Assignment 4</h1>
+
+<h3 id="twitter-sentiment-classification-using-apache-spark">Twitter Sentiment Classification using Apache Spark</h3>
+
+<h2 id="brief">Brief</h2>
+
+<ul>
+  <li>Due date and time: Thursday, April 28th at 11:59 pm</li>
+  <li>Data: <code class="highlighter-rouge">/data/train.csv</code> and <code class="highlighter-rouge">/data/test.csv</code></li>
+  <li>Handin: following the handin requirement, the last section in this writeup</li>
+  <li>Group Work</li>
+  <li>Required files: <code class="highlighter-rouge">README.md</code>, <code class="highlighter-rouge">**one** Jupyter Notebook</code>, <code class="highlighter-rouge">html/, html/index.html</code></li>
+</ul>
+
+<hr />
+
+<h2 id="overview">Overview</h2>
+
+<p>In this assignment, you will be performing <a href="http://en.wikipedia.org/wiki/Sentiment_analysis">sentiment analysis</a> on tweets using <a href="https://en.wikipedia.org/wiki/Apache_Spark">Apache Spark</a> with different machine learning techniques. You will learn how to extract features from data and build <a href="http://en.wikipedia.org/wiki/Supervised_learning">supervised learning</a> models to automatically classify tweets as either positive or negative (sentiment). Classifiers we will be examining are <a href="http://en.wikipedia.org/wiki/Naive_Bayes_classifier">Naive Bayes</a>, <a href="http://en.wikipedia.org/wiki/Logistic_regression">Logistic Regression</a>, and <a href="https://en.wikipedia.org/wiki/Decision_tree">Decision Tree</a>.</p>
+
+<hr />
+
+<h2 id="setup">Setup</h2>
+<p>According to feedback from the big data class, the students with Linux or Mac machine could set up Spark 1.6.x + Jupyter Notebook easily following the demonstration in class. However, it is totally a different story on Windows machine.</p>
+
+<p>If you have Spark 1.6.x + Jupyter Notebook running anywhere else, you are free to use that. Another easy option for you is following the tutorial on UIC CS491 course website – <a href="http://uiccs.github.io/datascience/azure.html">Creating a vanilla spark local deployment on Azure</a>. The tutorial is created by Professor Kanich and well tested without any problem. If you have any question, please post it on Piazza as soon as possible or come to the TA office hour for help.</p>
+
+<hr />
+
+<h2 id="data">Data</h2>
+
+<p>The <code class="highlighter-rouge">/data</code> directory contains two csv files: <code class="highlighter-rouge">training.csv</code> and <code class="highlighter-rouge">test.csv</code>.</p> For the training data, our TAs have use it to train a model. It takes a reasonable amount of time to build a model. If in your case, it is too slow to use too much training instances, feel free to take a subset of the training data to do experiments. But you should know that, you cannot build a model with good performance on too little training data.
+
+<p>Data file format has 6 fields:</p>
+
+<ol>
+  <li>the polarity of the tweet (0 = negative sentiment, 1 = positive sentiment)</li>
+  <li>the id of the tweet (2087)</li>
+  <li>the date of the tweet (Sat May 16 23:58:44 UTC 2009)</li>
+  <li>the query. If there is no query, then this value is <code class="highlighter-rouge">NO_QUERY</code>.</li>
+  <li>the user that tweeted (robotickilldozr)</li>
+  <li>the text of the tweet</li>
+</ol>
+
+<p>You will be only using the polarity and the text of the tweet. You should examine these data sets before starting the assignment.</p>
+
+<p>Original data source: <a href="http://help.sentiment140.com/">Sentiment140</a>.</p>
+
+<hr />
+
+<h2 id="supervised-classification">Supervised Classification</h2>
+
+<p>Supervised learning is a task of predicting a label (class) for the given test
+input, using the learning model trained on the labeled training inputs. For
+this assignment, you will train your model on <code class="highlighter-rouge">training.csv</code> and test it on
+<code class="highlighter-rouge">test.csv</code>. Both csv files contain sentiment labels (either positive or
+negative) for tweets. As shown in <code class="highlighter-rouge">Figure 1</code>, during the training phase, the
+feature extractor is used to convert each input data to a feature set. Then,
+pairs of feature sets and labels are inputted into the machine learning
+algorithm to train a model. During the prediction phase, the same feature
+extractor is applied on the test data, and the extracted feature sets are
+inputted into the model to generate the predicted labels.</p>
+
+<p><img src="supervised-classification.png" class="img-responsive" /></p>
+
+<hr />
+
+<h2 id="feature-extraction">Feature Extraction</h2>
+
+<h3 id="bag-of-words-model">Bag-of-words model</h3>
+
+<p>The <a href="http://en.wikipedia.org/wiki/Bag-of-words_model">bag-of-words
+model</a>, which is a
+<a href="http://en.wikipedia.org/wiki/Vector_space_model">vector-space
+representation</a> of
+documents that represents each document (tweet) as a vector of words,
+disregarding word order.</p>
+
+<p>Below is an example:
+Here are three documents, each document being one tweet.</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>i love you and you love me
+you are my love
+my love for you
+</code></pre>
+</div>
+
+<p>Based on these three documents, a <strong>vocabulary list</strong> is constructed as:</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>'i'  
+'love'    
+'you'  
+'and'  
+'me'  
+'are'  
+'my'  
+'for'
+</code></pre>
+</div>
+
+<p>which has 8 distinct words. And using the indices of the vocabulary
+list, each document is represented by an 8-entry vector:</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>1. [True, True, True, True, True, False, False, False]
+2. [False, True, True, False, False, True, True, False]
+3. [False, True, True, False, False, False, True, True]
+</code></pre>
+</div>
+
+<p>where each entry of the vectors refers to the existence of the
+corresponding entry in the vocabulary list. The first entry is only
+‘True’ for the first tweet since in the vocabulary, ‘i’ only exists in
+the first tweet. Usually, if we had a longer document, we would define
+each entry of vectors to refer to the count of the corresponding entry
+in the dictionary. For example, the first tweet would be vectorized as
+<code class="highlighter-rouge">[1, 2, 2, 1, 1, 0, 0, 0]</code>. However, since tweet texts are very short
+(limited to 140 characters), having the boolean entries will suffice for
+our purpose.</p>
+
+<p><code class="highlighter-rouge">spark.mllib</code> provides convenient package for <a href="http://spark.apache.org/docs/latest/mllib-feature-extraction.html">feature extraction and transformation</a>. For <em>sentiment analysis</em>, the most commonly used feature is <em>terms and frequency bag-of-words feature</em>. The programming guide will give you a concrete example about how to use <code class="highlighter-rouge">pyspark.mllib.feature</code> package to extract and convert input written text data into features in vector representation. You could either use <code class="highlighter-rouge">pyspark.mllib.feature.HashingTF</code> or <code class="highlighter-rouge">pyspark.mllib.feature.IDF</code> on the list of training tweets to get the training
+features. This process will transform the list of tweets into a RDD of matrix
+(each row corresponds to a document). In addition, you will need to transform the training
+labels (0 for negative and 1 for positive sentiment) into a RDD vector in order to feed into Spark machine learning models.
+The feature sets you extracted contain
+<a href="http://en.wikipedia.org/wiki/N-gram">unigram</a> features as each
+vocabulary in the feature space (the vocabulary list) is one word. You
+can experiment with other ngrams such as bigram (two-word feature) or
+trigram (three-word feature). For example, bigram features in the above
+tweets are ‘i love’, ‘love you’, ‘you and’, ‘and you’, ‘you love’, ‘love
+me’, ‘you are’ … Your feature space can also be a combination of
+different ngrams. For instance, you can have both unigrams and bigrams
+in your vocabulary list. For simplicity, it will be sufficient to keep
+only unigrams in your feature space, but you are welcome to experiment
+with other ngrams.</p>
+
+<h3 id="tweet-processing">Tweet Processing</h3>
+
+<p>Let’s take look at two example tweets.</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>I am SO exciteddddd for uiccs491! #uiccs @Azure http://uiccs.github.io/datascience
+
+i am so excited @ApacheSpark
+</code></pre>
+</div>
+
+<p>In the above example, the feature space will contain some duplicate
+information for some features. For example, both ‘I’ and ‘i’ will be in
+the feature space as well as the pair of ‘so’ and ‘SO’, and the pair of
+‘excited’ and ‘exciteddddd’. In addition, both the singular and the
+plural forms of a word will exist in the feature space. These duplicates
+cause the feature space to explode. It would be a good idea to group
+similar words as a single feature and keep meaningful words. Here are
+some suggestions to process tweets before building your vocabulary list
+and extracting features:</p>
+
+<ul>
+  <li>Lowercase all characters</li>
+  <li>Apply stemming using <a href="http://tartarus.org/martin/PorterStemmer/">Porter Stemmer</a>. Please refer to the python implementation in that webpage.</li>
+  <li>Strip punctuations</li>
+  <li>Replace two or more occurrences of the same character with two occurrences. i.e. ‘exciteddddd’ to ‘excitedd’</li>
+  <li>Replace #xyz with xyz</li>
+  <li>Replace a word contains www. or http(s):// with URL so that we can treat all the urls the same</li>
+  <li>Replace a word contains @someuser with AT_USER so that we can treat all the users the same</li>
+  <li>Ignore words that don’t start with an alphabet</li>
+  <li>Use the stop words list to filter out low value words such as ‘the’, ‘is’ and ‘on’.</li>
+  <li>… and many more</li>
+</ul>
+
+<p>You are required to lowercase all characters, but you are free to
+experiment with other options. You probably want to use <a href="http://docs.python.org/2/library/re.html">regular
+expressions</a> to implement some
+of these options. You should pick the processing options that are
+reasonable and give you the best performance.</p>
+
+<hr />
+
+<h2 id="training">Training</h2>
+
+<p>In this assignment, you will be experimenting with three classifiers:
+<a href="http://en.wikipedia.org/wiki/Naive_Bayes_classifier">Naive Bayes</a>,
+<a href="http://en.wikipedia.org/wiki/Logistic_regression">Logistic Regression</a>,
+and <a href="https://en.wikipedia.org/wiki/Decision_tree_learning">Decision tree</a>. You will
+use classifer modules from <a href="http://spark.apache.org/docs/latest/mllib-guide.html">Spark MLLib library</a>.</p>
+
+<p>Note that, the machine learning package of Spark is divided into two pakcages:
+- <strong>spark.mllib</strong> contains the original API built on top of <strong>RDDs</strong>.<br />
+- <strong>spark.ml</strong> provides higher-level API built on top of <strong>DataFrames</strong> for constructing ML pipelines.</p>
+
+<p>Although we demonstrated Spark tutorial using <em>DataFrames</em> in class, in this homework, the Machine Learning algorithm and evaluation functions are only available in <em>MLlib</em>, so we will use <em>RDDs</em> instead of <em>DataFrames</em></p>
+
+<h3 id="naive-bayes">Naive Bayes</h3>
+
+<p><a href="http://en.wikipedia.org/wiki/Naive_Bayes_classifier">Naive Bayes</a>
+assumes that all features are independent from each other (in other
+words, each feature’s weight is set independently), and uses the prior
+probability (i.e. what percentage of tweets are labeled as positive in
+the training set?) and the likelihood (i.e. what is the probability of
+seeing a word ‘happy’ in positive tweets?) to determine the posterior
+probability (i.e. if a tweet contains words ‘happy’, ‘congratulations’
+and ‘great’, what is the probability of classifying this tweet as
+positive?) in order to classify the inputs.
+<a href="http://nlp.stanford.edu/IR-book/html/htmledition/naive-bayes-text-classification-1.html">This</a>
+article has a good example of <a href="http://nlp.stanford.edu/IR-book/html/htmledition/naive-bayes-text-classification-1.html">Multinomial Naive Bayes</a>, which uses word
+counts as its features. Since our documents are very short (140
+characters limitation), we will be using <a href="http://nlp.stanford.edu/IR-book/html/htmledition/the-bernoulli-model-1.html"><strong>Bernoulli Naive Bayes</strong></a>, which
+uses boolean values for each feature.</p>
+
+<p>You will use <a href="http://spark.apache.org/docs/latest/mllib-naive-bayes.html">Naive Bayes in spark.mllib</a>,
+specifically Bernoulli Naive
+Bayes.</p>
+
+<h3 id="logistic-regression">Logistic Regression</h3>
+
+<p><a href="http://en.wikipedia.org/wiki/Logistic_regression">Logistic Regression</a>
+essentially finds coefficients for the linear decision function. For
+example, it determines how much it will weigh a feature ‘happy’ when
+deciding the tweet is positive or negative. In contrast to Naive Bayes,
+whose feature weights are set independently, Logistic Regression sets
+all the weights together. Let’s say there are two correlated features
+that are useful predictors. In this case, Naive Bayes will give both of
+them strong weights so those are double-counted, whereas Logistic
+Regression will compensate by weighting them lower.</p>
+
+<p>You will use <a href="http://spark.apache.org/docs/latest/mllib-linear-methods.html#logistic-regression">Logistic Regression in
+spark.mllib</a>.</p>
+
+<h3 id="decision-tree-learning">Decision Tree Learning</h3>
+
+<p><a href="https://en.wikipedia.org/wiki/Decision_tree_learning">Decision tree learning</a> uses a decision tree as a predictive model which maps observations about an item to conclusions about the item’s target value. It is one of the predictive modelling approaches used in statistics, data mining and machine learning. Tree models where the target variable can take a finite set of values are called classification trees. In these tree structures, leaves represent class labels and branches represent conjunctions of features that lead to those class labels.</p>
+
+<p>You will use <a href="http://spark.apache.org/docs/latest/mllib-decision-tree.html">Decision Trees in spark.mllib</a>.</p>
+
+<hr />
+
+<h2 id="validation">Validation</h2>
+
+<p>Once the model is trained, you need to see how it performs. You can evaluate on the training dataset to check if the model gives you reasonable performance (accuracy) on the data it was trained.</p>
+
+<p>Let’s say your classifier is performing well (i.e. ~80% accuracy on
+training set). It is now very tempting to stick with the current model
+and test it on the test set. However, it is possible that your model
+‘overfits’ on training set. In other words, your model might perform
+well with known data (training set), but when it encounters a new data
+set (test set), it might not yield similar levels of high performance.</p>
+
+<p>To avoid overfitting, it is a common practice to hold out parts of the
+training data as a validation set. You will use <a href="http://en.wikipedia.org/wiki/Cross-validation_(statistics)#K-fold_cross-validation">K-fold
+cross-validation</a>
+to validate your training model. In K-fold cross-validation, the original sample is randomly partitioned into k equal size partitions. Of the k partitions, k - 1 partitions are used as a training set and the remaining partition is used as a validation set. This process is repeated over k folds to generate k results that are averaged to produce a single estimation. When experimenting with different models with different parameters and different features, you should cross-validate each model and pick the model that gives the best cross-validation performance.</p>
+
+<hr />
+
+<h2 id="testing">Testing</h2>
+
+<p>Once you found the best model, let’s first test on a single tweet. Here
+is one tweet:</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>It is possible to be 'madly in love' with someone, when it is really just an attraction to someone who can meet your needs.
+</code></pre>
+</div>
+
+<p>You should first extract features and transform them using <code class="highlighter-rouge">pyspark.mllib.feature.HashingTF</code> or <code class="highlighter-rouge">pyspark.mllib.feature.IDF</code>.
+Then you can use the previously trained and saved models to get the predicted label for the given input.</p>
+
+<p>To test on the test set, you can follow the same procedure to get the predicted label and the prediction probability. To attain  comprehensive statistics, you can use
+<a href="http://spark.apache.org/docs/latest/mllib-evaluation-metrics.html">Evaluation Metrics in spark.mllib</a>. Please follow the code snippet, use multiple evaluation metrics to analyze your model, such as precision, recall, F-measure, ROC etc.</p>
+
+<hr />
+
+<h2 id="write-up">Write up</h2>
+
+<p>For this project, you must write a project report in HTML, answering all questions below (<u>label your answers 1. to 10., as unlabelled answers will not get a grade</u>) elaborating on any additional work you did. You should state the problem you have solved, the setting, the procedure and the findings, as if you are writing a blog article or research paper. That is, your answers must be <u>clear</u>, <u>complete</u>, but <u>concise</u> (avoid <u>repetitions</u>). </p>
+
+<ol>
+  <li>Describe your tweet processing steps.</li>
+  <li>Describe your feature space. Did you decide to use unigrams,
+bigrams, or both? What is the size of your feature space?</li>
+  <li>Describe any extra work (i.e. parameter tuning) you did on three
+classifiers: NB, LOG and Decision Tree(DT). How did it help?</li>
+  <li>For three classifiers (NB, LOG and DT), report training accuracy,
+10-fold cross-validation accuracy, test accuracy, avg
+precision/recall/f1-score on test, and the confusion matrix on test.
+Any findings?</li>
+  <li>For three classifiers (NB, LOG and DT), plot training accuracy,
+10-fold cross-validation accuracy and test accuracy together using
+<a href="http://matplotlib.org/">matplotlib</a>. You can check out <a href="http://matplotlib.org/users/pyplot_tutorial.html">this
+tutorial</a>. Which
+classifier overfits the most?</li>
+  <li>Describe the following terms in the context of the assignment:
+precision, recall, f1-score, confusion matrix (true positive, true
+negative, false positive, false negative).</li>
+  <li>For NB and LOG, plot the ROC curve and report the area under
+the curve. What do you learn from the ROC curve?</li>
+  <li>Report top 20 most informative features for all three classifiers.
+Any findings?</li>
+  <li>Which classifier performs the best? Why?</li>
+  <li>Using the best classifer, print some test tweets that are classified
+correctly or incorreclty along with their prediction probabilities.
+Among correctly classified tweets, print 5 tweets with highest
+predicted probailities. Repeat this for incorrectly
+classified tweets.</li>
+</ol>
+
+<hr />
+
+<h2 id="handing-in">Handing in</h2>
+<p>For submitting to blackboard, create a folder with your NetID, put all the required files in the folder
+and zip it into <code class="highlighter-rouge">[your NetID].zip</code>, not other file extension.</p>
+
+<p>The folder you hand in must contain the following:</p>
+
+<ul>
+  <li>README - text file containing anything about the project that you
+want to tell the TAs.</li>
+  <li>The Jupyter Notebook in ipynb format - please put your all the code in **one** Jupyter Notebook file. You should write detailed explanation/comment 
+   of each step in the markdown cells about the methods and the reasons you do some operation, rather than too much comments in the code. We will test you notebook. If there is some additional packages installed, please include the installation instruction in the first markdown cell in your notebook. </li>
+  <li>html/ - directory containing all your html report for this
+assignment, including images.</li>
+  <li>html/index.html - write up, the report that contains your results. If your Jupyter notebook is very well written, you MAY build your report through the notebook, but it will need to include all of the content that the normal report requires. </li>
+</ul>
+
+<p>Late submission is not acceptable. The submission link in Blackboard will disappear immediately at
+the deadline. You could submit multiple times, only the latest version will be graded.</p>
+
+<p><strong>Group Work for This Assignment:</strong></p>
+You have two options:
+<li>done alone: only have to do any 2 algorithms.</li>
+<li>done in groups of 2: have to do all three algorithms. Note that, no group should be bigger than 2. </li>
+For group of 2, you could submit one copy of the homework in the blackboard. Please make sure to put your group information in the very beginning of both Jupyter Notebook markdown cell and project report. 
+
+
+<p><strong>Cheating/Plagiarism Policy</strong>:
+Please follow the academic integrity part given as part of the course <a href="http://uiccs.github.io/datascience/syllabus.html">syllabus</a>.</p>
+
+        </div>
+      </div>
+    </div>
+    <!-- Footer
+    ================================================== -->
+    <div class="clearfix"></div>
+    <footer class="bs-footer" role="contentinfo">
+    <div class="container">    
+         <ul class="footer-links">
+           <li>This course includes slides/assignments partially based on material from the <a href="http://teachingdatascience.org">Data Science Teaching Initiative</a>.</li>
+           <BR/>
+           <li>Special thanks are due to <a href="http://cs.brown.edu/~kraskat/">Tim Kraska</a> from the <a href="http://cs.brown.edu/">Department of Computer Science at Brown University</a>.</li>
+          <BR/>
+          <li>Site contents by <a href="https://www.cs.uic.edu/Cruz/">Isabel Cruz</a>, <a href="https://www.cs.uic.edu/Sistla">Prasad Sistla</a>, <a href="https://www.cs.uic.edu/~ckanich/">Chris Kanich</a>, and the CS491 TAs.</li>
+          <BR/>
+          <li>Site design by <a href="https://www.cs.uic.edu/~ckanich/">Chris Kanich</a>.</li>
+          <BR/>
+           <li><a href="https://www.cs.uic.edu/">UIC Computer Science</a>.</li>
+        </ul>
+    </div>
+    </footer>
+    <!-- JS and analytics only. -->
+    <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+<script src="//code.jquery.com/jquery.js"></script>
+<!-- Include all compiled plugins (below), or include individual files as needed -->
+<script src="/datascience/js/bootstrap.min.js"></script>
+
+  </body>
+</html>
+
+
